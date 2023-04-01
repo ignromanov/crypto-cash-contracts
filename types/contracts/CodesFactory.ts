@@ -30,24 +30,32 @@ import type {
 export interface CodesFactoryInterface extends utils.Interface {
   functions: {
     "addMerkleRoot(bytes32,uint256,uint256)": FunctionFragment;
+    "commitCode(bytes32)": FunctionFragment;
+    "commitments(address,uint256)": FunctionFragment;
     "getMerkleRoots()": FunctionFragment;
+    "getRedeemedLeaves(bytes32[])": FunctionFragment;
+    "getUserCommitments(address)": FunctionFragment;
     "merkleRoots(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
-    "redeemCode(uint256,bytes32[],bytes32,uint256)": FunctionFragment;
-    "redeemedCodes(bytes32)": FunctionFragment;
+    "redeemedLeaves(bytes32)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
+    "revealCode(uint256,bytes32,uint256,uint256,bytes32[])": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "addMerkleRoot"
+      | "commitCode"
+      | "commitments"
       | "getMerkleRoots"
+      | "getRedeemedLeaves"
+      | "getUserCommitments"
       | "merkleRoots"
       | "owner"
-      | "redeemCode"
-      | "redeemedCodes"
+      | "redeemedLeaves"
       | "renounceOwnership"
+      | "revealCode"
       | "transferOwnership"
   ): FunctionFragment;
 
@@ -60,8 +68,24 @@ export interface CodesFactoryInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
+    functionFragment: "commitCode",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "commitments",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getMerkleRoots",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRedeemedLeaves",
+    values: [PromiseOrValue<BytesLike>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getUserCommitments",
+    values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
     functionFragment: "merkleRoots",
@@ -69,21 +93,22 @@ export interface CodesFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
-    functionFragment: "redeemCode",
-    values: [
-      PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BytesLike>[],
-      PromiseOrValue<BytesLike>,
-      PromiseOrValue<BigNumberish>
-    ]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "redeemedCodes",
+    functionFragment: "redeemedLeaves",
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "revealCode",
+    values: [
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BytesLike>[]
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
@@ -94,8 +119,21 @@ export interface CodesFactoryInterface extends utils.Interface {
     functionFragment: "addMerkleRoot",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "commitCode", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "commitments",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getMerkleRoots",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRedeemedLeaves",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getUserCommitments",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -103,22 +141,22 @@ export interface CodesFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "redeemCode", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "redeemedCodes",
+    functionFragment: "redeemedLeaves",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "renounceOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "revealCode", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
 
   events: {
-    "CodeRedeemed(address,uint256)": EventFragment;
+    "CodeRedeemed(address,bytes32,uint256)": EventFragment;
     "MerkleRootAdded(uint256,bytes32)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
@@ -129,11 +167,12 @@ export interface CodesFactoryInterface extends utils.Interface {
 }
 
 export interface CodeRedeemedEventObject {
-  user: string;
+  redeemer: string;
+  secretCode: string;
   amount: BigNumber;
 }
 export type CodeRedeemedEvent = TypedEvent<
-  [string, BigNumber],
+  [string, string, BigNumber],
   CodeRedeemedEventObject
 >;
 
@@ -196,7 +235,28 @@ export interface CodesFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    commitCode(
+      commitment: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    commitments(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     getMerkleRoots(overrides?: CallOverrides): Promise<[string[]]>;
+
+    getRedeemedLeaves(
+      leaves: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<[string[]]>;
+
+    getUserCommitments(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<[string[]]>;
 
     merkleRoots(
       arg0: PromiseOrValue<BigNumberish>,
@@ -205,20 +265,21 @@ export interface CodesFactory extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<[string]>;
 
-    redeemCode(
-      merkleRootIndex: PromiseOrValue<BigNumberish>,
-      merkleProof: PromiseOrValue<BytesLike>[],
-      secretCodeHash: PromiseOrValue<BytesLike>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    redeemedCodes(
+    redeemedLeaves(
       arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
     renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    revealCode(
+      merkleRootIndex: PromiseOrValue<BigNumberish>,
+      secretCode: PromiseOrValue<BytesLike>,
+      amount: PromiseOrValue<BigNumberish>,
+      nonce: PromiseOrValue<BigNumberish>,
+      merkleProof: PromiseOrValue<BytesLike>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -235,7 +296,28 @@ export interface CodesFactory extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  commitCode(
+    commitment: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  commitments(
+    arg0: PromiseOrValue<string>,
+    arg1: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   getMerkleRoots(overrides?: CallOverrides): Promise<string[]>;
+
+  getRedeemedLeaves(
+    leaves: PromiseOrValue<BytesLike>[],
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  getUserCommitments(
+    user: PromiseOrValue<string>,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
 
   merkleRoots(
     arg0: PromiseOrValue<BigNumberish>,
@@ -244,20 +326,21 @@ export interface CodesFactory extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
-  redeemCode(
-    merkleRootIndex: PromiseOrValue<BigNumberish>,
-    merkleProof: PromiseOrValue<BytesLike>[],
-    secretCodeHash: PromiseOrValue<BytesLike>,
-    amount: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  redeemedCodes(
+  redeemedLeaves(
     arg0: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<boolean>;
 
   renounceOwnership(
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  revealCode(
+    merkleRootIndex: PromiseOrValue<BigNumberish>,
+    secretCode: PromiseOrValue<BytesLike>,
+    amount: PromiseOrValue<BigNumberish>,
+    nonce: PromiseOrValue<BigNumberish>,
+    merkleProof: PromiseOrValue<BytesLike>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -274,7 +357,28 @@ export interface CodesFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    commitCode(
+      commitment: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    commitments(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
     getMerkleRoots(overrides?: CallOverrides): Promise<string[]>;
+
+    getRedeemedLeaves(
+      leaves: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    getUserCommitments(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
 
     merkleRoots(
       arg0: PromiseOrValue<BigNumberish>,
@@ -283,20 +387,21 @@ export interface CodesFactory extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<string>;
 
-    redeemCode(
-      merkleRootIndex: PromiseOrValue<BigNumberish>,
-      merkleProof: PromiseOrValue<BytesLike>[],
-      secretCodeHash: PromiseOrValue<BytesLike>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    redeemedCodes(
+    redeemedLeaves(
       arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<boolean>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
+
+    revealCode(
+      merkleRootIndex: PromiseOrValue<BigNumberish>,
+      secretCode: PromiseOrValue<BytesLike>,
+      amount: PromiseOrValue<BigNumberish>,
+      nonce: PromiseOrValue<BigNumberish>,
+      merkleProof: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -305,12 +410,14 @@ export interface CodesFactory extends BaseContract {
   };
 
   filters: {
-    "CodeRedeemed(address,uint256)"(
-      user?: PromiseOrValue<string> | null,
+    "CodeRedeemed(address,bytes32,uint256)"(
+      redeemer?: PromiseOrValue<string> | null,
+      secretCode?: null,
       amount?: null
     ): CodeRedeemedEventFilter;
     CodeRedeemed(
-      user?: PromiseOrValue<string> | null,
+      redeemer?: PromiseOrValue<string> | null,
+      secretCode?: null,
       amount?: null
     ): CodeRedeemedEventFilter;
 
@@ -341,7 +448,28 @@ export interface CodesFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    commitCode(
+      commitment: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    commitments(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     getMerkleRoots(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getRedeemedLeaves(
+      leaves: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getUserCommitments(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     merkleRoots(
       arg0: PromiseOrValue<BigNumberish>,
@@ -350,20 +478,21 @@ export interface CodesFactory extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
-    redeemCode(
-      merkleRootIndex: PromiseOrValue<BigNumberish>,
-      merkleProof: PromiseOrValue<BytesLike>[],
-      secretCodeHash: PromiseOrValue<BytesLike>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    redeemedCodes(
+    redeemedLeaves(
       arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    revealCode(
+      merkleRootIndex: PromiseOrValue<BigNumberish>,
+      secretCode: PromiseOrValue<BytesLike>,
+      amount: PromiseOrValue<BigNumberish>,
+      nonce: PromiseOrValue<BigNumberish>,
+      merkleProof: PromiseOrValue<BytesLike>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -381,7 +510,28 @@ export interface CodesFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    commitCode(
+      commitment: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    commitments(
+      arg0: PromiseOrValue<string>,
+      arg1: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     getMerkleRoots(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getRedeemedLeaves(
+      leaves: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getUserCommitments(
+      user: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     merkleRoots(
       arg0: PromiseOrValue<BigNumberish>,
@@ -390,20 +540,21 @@ export interface CodesFactory extends BaseContract {
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    redeemCode(
-      merkleRootIndex: PromiseOrValue<BigNumberish>,
-      merkleProof: PromiseOrValue<BytesLike>[],
-      secretCodeHash: PromiseOrValue<BytesLike>,
-      amount: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    redeemedCodes(
+    redeemedLeaves(
       arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     renounceOwnership(
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    revealCode(
+      merkleRootIndex: PromiseOrValue<BigNumberish>,
+      secretCode: PromiseOrValue<BytesLike>,
+      amount: PromiseOrValue<BigNumberish>,
+      nonce: PromiseOrValue<BigNumberish>,
+      merkleProof: PromiseOrValue<BytesLike>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
