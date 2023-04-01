@@ -28,8 +28,48 @@ contract CodesFactory is Ownable {
         _stMadToken = StMadToken(stMadTokenAddress);
     }
 
+    // * receive function
+    receive() external payable {}
+
+    // * fallback function
+    fallback() external payable {}
+
     function getMerkleRoots() public view returns (bytes32[] memory) {
         return merkleRoots;
+    }
+
+    function getUserCommitments(
+        address user
+    ) public view returns (bytes32[] memory) {
+        return commitments[user];
+    }
+
+    function getRedeemedLeaves(
+        bytes32[] calldata leaves
+    ) public view returns (bytes32[] memory) {
+        // Initialize a dynamic array to store redeemed leaves
+        bytes32[] memory redeemedLeavesArray = new bytes32[](leaves.length);
+
+        // Keep track of the number of redeemed leaves found
+        uint256 redeemedLeavesCount = 0;
+
+        // Iterate through the provided leaves array
+        for (uint256 i = 0; i < leaves.length; i++) {
+            // Check if the leaf is redeemed
+            if (redeemedLeaves[leaves[i]]) {
+                // Add the redeemed leaf to the redeemedLeavesArray
+                redeemedLeavesArray[redeemedLeavesCount] = leaves[i];
+                redeemedLeavesCount++;
+            }
+        }
+
+        // Resize the redeemedLeavesArray to match the redeemedLeavesCount
+        assembly {
+            mstore(redeemedLeavesArray, redeemedLeavesCount)
+        }
+
+        // Return the redeemedLeavesArray containing only the redeemed leaves
+        return redeemedLeavesArray;
     }
 
     function addMerkleRoot(
