@@ -1,4 +1,4 @@
-import { ethers, upgrades } from "hardhat";
+import { ethers } from "hardhat";
 
 async function main() {
   const [deployer] = await ethers.getSigners();
@@ -17,7 +17,7 @@ async function main() {
   console.log("CodesFactory deployed to:", codesFactory.address);
 
   // Call setCodesFactory function on stMadToken contract
-  await stMadToken.setCodesFactory(codesFactory.address);
+  await stMadToken.setAuthorizedMinter(codesFactory.address);
   console.log("CodesFactory address set in stMadToken contract");
 }
 
