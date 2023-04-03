@@ -64,3 +64,7 @@ Then, run the following command to deploy:
 ```bash
 npx hardhat run --network <network> scripts/deploy.js
 ```
+
+## License
+
+This project is licensed under the MIT License.
