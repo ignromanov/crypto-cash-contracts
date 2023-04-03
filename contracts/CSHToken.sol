@@ -21,7 +21,10 @@ contract CSHToken is ERC20, Ownable {
      * @dev Modifier to restrict minting functionality to the CodesFactory contract.
      */
     modifier onlyCodesFactory() {
-        require(msg.sender == _authorizedMinter, "Only CodesFactory can mint");
+        require(
+            msg.sender == _authorizedMinter,
+            "Only AuthorizedMinter can mint tokens"
+        );
         _;
     }
 
