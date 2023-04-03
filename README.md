@@ -1,13 +1,66 @@
-# Sample Hardhat Project
+# CryptoCash Smart Contracts
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+This repository contains the smart contracts for the CryptoCash project, a token-based system that allows users to generate and redeem secret codes for acquiring tokens. These contracts are deployed on the Polygon blockchain.
 
-Try running some of the following tasks:
+[Web Application Repository](https://github.com/ignromanov/crypto-cash-webapp)
 
-```shell
-npx hardhat help
+[Run Demo Application](https://demo.crypto-cash.app)
+
+## Contracts
+
+1. `CSHToken.sol`: The CryptoCash token (CSH) contract, which is an ERC20 token.
+2. `CodesFactory.sol`: The main contract that handles the generation and redemption of secret codes for acquiring tokens.
+
+## Development
+
+### Prerequisites
+
+- Node.js v16.x.x or later
+- Npm package manager
+- Hardhat development environment
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/ignromanov/crypto-cash-contracts.git
+```
+
+2. Change to the repository's directory:
+
+```bash
+cd crypto-cash-contracts
+```
+
+3. Install dependencies:
+
+```bash
+npm install
+```
+
+### Compile
+
+To compile the smart contracts, run:
+
+```bash
+npx hardhat compile
+```
+
+### Test
+
+To run the tests, execute:
+
+```bash
 npx hardhat test
-REPORT_GAS=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
+```
+
+## Deployment
+
+To deploy the smart contracts, you'll need to configure the deployment script (`scripts/deploy.js`) with your desired network and update the `.env` file with your private key and Infura project ID.
+
+Then, run the following command to deploy:
+
+```bash
+npx hardhat run --network <network> scripts/deploy.js
 ```
