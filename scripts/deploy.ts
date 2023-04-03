@@ -4,21 +4,21 @@ async function main() {
   const [deployer] = await ethers.getSigners();
   console.log("Deploying contracts with the account:", deployer.address);
 
-  // Deploying the StMadToken contract
-  const StMadToken = await ethers.getContractFactory("StMadToken");
-  const stMadToken = await StMadToken.deploy();
-  await stMadToken.deployed();
-  console.log("StMadToken deployed to:", stMadToken.address);
+  // Deploying the CSHToken contract
+  const CSHTokenContract = await ethers.getContractFactory("CSHToken");
+  const cSHToken = await CSHTokenContract.deploy();
+  await cSHToken.deployed();
+  console.log("CSHToken deployed to:", cSHToken.address);
 
-  // Deploying the StMadToken contract
-  const CodesFactory = await ethers.getContractFactory("CodesFactory");
-  const codesFactory = await CodesFactory.deploy(stMadToken.address);
+  // Deploying the CSHToken contract
+  const CodesFactoryContract = await ethers.getContractFactory("CodesFactory");
+  const codesFactory = await CodesFactoryContract.deploy(cSHToken.address);
   await codesFactory.deployed();
   console.log("CodesFactory deployed to:", codesFactory.address);
 
-  // Call setCodesFactory function on stMadToken contract
-  await stMadToken.setAuthorizedMinter(codesFactory.address);
-  console.log("CodesFactory address set in stMadToken contract");
+  // Call setCodesFactory function on CSHToken contract
+  await cSHToken.setAuthorizedMinter(codesFactory.address);
+  console.log("CodesFactory address set in CSHToken contract");
 }
 
 main()

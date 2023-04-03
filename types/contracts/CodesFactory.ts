@@ -159,11 +159,13 @@ export interface CodesFactoryInterface extends utils.Interface {
     "CodeRedeemed(address,bytes32,uint256)": EventFragment;
     "MerkleRootAdded(uint256,bytes32)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "UserCommitmentAdded(address,bytes32)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CodeRedeemed"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "MerkleRootAdded"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UserCommitmentAdded"): EventFragment;
 }
 
 export interface CodeRedeemedEventObject {
@@ -200,6 +202,18 @@ export type OwnershipTransferredEvent = TypedEvent<
 
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
+
+export interface UserCommitmentAddedEventObject {
+  user: string;
+  commitment: string;
+}
+export type UserCommitmentAddedEvent = TypedEvent<
+  [string, string],
+  UserCommitmentAddedEventObject
+>;
+
+export type UserCommitmentAddedEventFilter =
+  TypedEventFilter<UserCommitmentAddedEvent>;
 
 export interface CodesFactory extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -438,6 +452,15 @@ export interface CodesFactory extends BaseContract {
       previousOwner?: PromiseOrValue<string> | null,
       newOwner?: PromiseOrValue<string> | null
     ): OwnershipTransferredEventFilter;
+
+    "UserCommitmentAdded(address,bytes32)"(
+      user?: PromiseOrValue<string> | null,
+      commitment?: null
+    ): UserCommitmentAddedEventFilter;
+    UserCommitmentAdded(
+      user?: PromiseOrValue<string> | null,
+      commitment?: null
+    ): UserCommitmentAddedEventFilter;
   };
 
   estimateGas: {

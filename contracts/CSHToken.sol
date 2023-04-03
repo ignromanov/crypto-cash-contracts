@@ -5,17 +5,17 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
- * @title StMadToken
+ * @title CSHToken
  * @dev An ERC20 token with minting functionality restricted to the CodesFactory contract.
  */
-contract StMadToken is ERC20, Ownable {
+contract CSHToken is ERC20, Ownable {
     address private _authorizedMinter;
     event CodesFactoryChanged(
         address indexed previousCodesFactory,
         address indexed newCodesFactory
     );
 
-    constructor() ERC20("StMad Token", "stMad") {}
+    constructor() ERC20("CryptoCash Token", "CSH") {}
 
     /**
      * @dev Modifier to restrict minting functionality to the CodesFactory contract.

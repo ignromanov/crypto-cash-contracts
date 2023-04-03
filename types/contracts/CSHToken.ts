@@ -27,19 +27,20 @@ import type {
   PromiseOrValue,
 } from "../common";
 
-export interface StMadTokenInterface extends utils.Interface {
+export interface CSHTokenInterface extends utils.Interface {
   functions: {
     "allowance(address,address)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
+    "getAuthorizedMinter()": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "mint(address,uint256)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "setCodesFactory(address)": FunctionFragment;
+    "setAuthorizedMinter(address)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transfer(address,uint256)": FunctionFragment;
@@ -54,12 +55,13 @@ export interface StMadTokenInterface extends utils.Interface {
       | "balanceOf"
       | "decimals"
       | "decreaseAllowance"
+      | "getAuthorizedMinter"
       | "increaseAllowance"
       | "mint"
       | "name"
       | "owner"
       | "renounceOwnership"
-      | "setCodesFactory"
+      | "setAuthorizedMinter"
       | "symbol"
       | "totalSupply"
       | "transfer"
@@ -85,6 +87,10 @@ export interface StMadTokenInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
+    functionFragment: "getAuthorizedMinter",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
     functionFragment: "increaseAllowance",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
@@ -99,7 +105,7 @@ export interface StMadTokenInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "setCodesFactory",
+    functionFragment: "setAuthorizedMinter",
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
@@ -133,6 +139,10 @@ export interface StMadTokenInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "getAuthorizedMinter",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "increaseAllowance",
     data: BytesLike
   ): Result;
@@ -144,7 +154,7 @@ export interface StMadTokenInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "setCodesFactory",
+    functionFragment: "setAuthorizedMinter",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
@@ -164,11 +174,13 @@ export interface StMadTokenInterface extends utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
+    "CodesFactoryChanged(address,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "CodesFactoryChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
@@ -184,6 +196,18 @@ export type ApprovalEvent = TypedEvent<
 >;
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
+
+export interface CodesFactoryChangedEventObject {
+  previousCodesFactory: string;
+  newCodesFactory: string;
+}
+export type CodesFactoryChangedEvent = TypedEvent<
+  [string, string],
+  CodesFactoryChangedEventObject
+>;
+
+export type CodesFactoryChangedEventFilter =
+  TypedEventFilter<CodesFactoryChangedEvent>;
 
 export interface OwnershipTransferredEventObject {
   previousOwner: string;
@@ -209,12 +233,12 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface StMadToken extends BaseContract {
+export interface CSHToken extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: StMadTokenInterface;
+  interface: CSHTokenInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -261,6 +285,8 @@ export interface StMadToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    getAuthorizedMinter(overrides?: CallOverrides): Promise<[string]>;
+
     increaseAllowance(
       spender: PromiseOrValue<string>,
       addedValue: PromiseOrValue<BigNumberish>,
@@ -281,8 +307,8 @@ export interface StMadToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    setCodesFactory(
-      newCodesFactory: PromiseOrValue<string>,
+    setAuthorizedMinter(
+      newAuthorizedMinter: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -334,6 +360,8 @@ export interface StMadToken extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  getAuthorizedMinter(overrides?: CallOverrides): Promise<string>;
+
   increaseAllowance(
     spender: PromiseOrValue<string>,
     addedValue: PromiseOrValue<BigNumberish>,
@@ -354,8 +382,8 @@ export interface StMadToken extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  setCodesFactory(
-    newCodesFactory: PromiseOrValue<string>,
+  setAuthorizedMinter(
+    newAuthorizedMinter: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -407,6 +435,8 @@ export interface StMadToken extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    getAuthorizedMinter(overrides?: CallOverrides): Promise<string>;
+
     increaseAllowance(
       spender: PromiseOrValue<string>,
       addedValue: PromiseOrValue<BigNumberish>,
@@ -425,8 +455,8 @@ export interface StMadToken extends BaseContract {
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
-    setCodesFactory(
-      newCodesFactory: PromiseOrValue<string>,
+    setAuthorizedMinter(
+      newAuthorizedMinter: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -464,6 +494,15 @@ export interface StMadToken extends BaseContract {
       spender?: PromiseOrValue<string> | null,
       value?: null
     ): ApprovalEventFilter;
+
+    "CodesFactoryChanged(address,address)"(
+      previousCodesFactory?: PromiseOrValue<string> | null,
+      newCodesFactory?: PromiseOrValue<string> | null
+    ): CodesFactoryChangedEventFilter;
+    CodesFactoryChanged(
+      previousCodesFactory?: PromiseOrValue<string> | null,
+      newCodesFactory?: PromiseOrValue<string> | null
+    ): CodesFactoryChangedEventFilter;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: PromiseOrValue<string> | null,
@@ -512,6 +551,8 @@ export interface StMadToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    getAuthorizedMinter(overrides?: CallOverrides): Promise<BigNumber>;
+
     increaseAllowance(
       spender: PromiseOrValue<string>,
       addedValue: PromiseOrValue<BigNumberish>,
@@ -532,8 +573,8 @@ export interface StMadToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    setCodesFactory(
-      newCodesFactory: PromiseOrValue<string>,
+    setAuthorizedMinter(
+      newAuthorizedMinter: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -586,6 +627,10 @@ export interface StMadToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    getAuthorizedMinter(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     increaseAllowance(
       spender: PromiseOrValue<string>,
       addedValue: PromiseOrValue<BigNumberish>,
@@ -606,8 +651,8 @@ export interface StMadToken extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    setCodesFactory(
-      newCodesFactory: PromiseOrValue<string>,
+    setAuthorizedMinter(
+      newAuthorizedMinter: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

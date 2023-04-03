@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "./StMadToken.sol";
+import "./CSHToken.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
@@ -12,10 +12,10 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
  * @title CodesFactory - A contract to generate and redeem token-based codes
  */
 contract CodesFactory is Ownable, ReentrancyGuard {
-    using SafeERC20 for StMadToken;
+    using SafeERC20 for CSHToken;
     using MerkleProof for bytes32[];
 
-    StMadToken private _stMadToken;
+    CSHToken private _CSHToken;
     bytes32[] public merkleRoots;
 
     mapping(bytes32 => bool) public redeemedLeaves;
@@ -31,10 +31,10 @@ contract CodesFactory is Ownable, ReentrancyGuard {
 
     /**
      * @notice Creates a new CodesFactory contract
-     * @param stMadTokenAddress The address of the StMadToken contract
+     * @param CSHTokenAddress The address of the CSHToken contract
      */
-    constructor(address stMadTokenAddress) {
-        _stMadToken = StMadToken(stMadTokenAddress);
+    constructor(address CSHTokenAddress) {
+        _CSHToken = CSHToken(CSHTokenAddress);
     }
 
     /**
@@ -107,7 +107,7 @@ contract CodesFactory is Ownable, ReentrancyGuard {
         uint256 merkleRootIndex = merkleRoots.length - 1;
 
         uint256 totalTokensToMint = numberOfCodes * amount;
-        _stMadToken.mint(address(this), totalTokensToMint);
+        _CSHToken.mint(address(this), totalTokensToMint);
 
         emit MerkleRootAdded(merkleRootIndex, merkleRoot);
     }
@@ -236,7 +236,7 @@ contract CodesFactory is Ownable, ReentrancyGuard {
         bytes32 merkleRoot,
         uint256 commitmentIndex
     ) internal {
-        uint256 contractBalance = _stMadToken.balanceOf(address(this));
+        uint256 contractBalance = _CSHToken.balanceOf(address(this));
         require(contractBalance >= amount, "Not enough tokens in the contract");
 
         bytes32[] storage userCommitments = commitments[msg.sender];
@@ -247,7 +247,7 @@ contract CodesFactory is Ownable, ReentrancyGuard {
 
         redeemedLeaves[merkleRoot] = true;
 
-        _stMadToken.safeTransfer(msg.sender, amount);
+        _CSHToken.safeTransfer(msg.sender, amount);
 
         emit CodeRedeemed(msg.sender, secretCode, amount);
     }

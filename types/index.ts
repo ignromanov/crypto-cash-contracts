@@ -18,5 +18,5 @@ export type { IERC20 } from "./@openzeppelin/contracts/token/ERC20/IERC20";
 export { IERC20__factory } from "./factories/@openzeppelin/contracts/token/ERC20/IERC20__factory";
 export type { CodesFactory } from "./contracts/CodesFactory";
 export { CodesFactory__factory } from "./factories/contracts/CodesFactory__factory";
-export type { StMadToken } from "./contracts/StMadToken";
-export { StMadToken__factory } from "./factories/contracts/StMadToken__factory";
+export type { CSHToken } from "./contracts/CSHToken";
+export { CSHToken__factory } from "./factories/contracts/CSHToken__factory";
