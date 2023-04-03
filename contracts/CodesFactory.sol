@@ -148,7 +148,7 @@ contract CodesFactory is Ownable, ReentrancyGuard {
         uint256 commitmentIndex = checkCommitment(secretCode, nonce);
 
         // Validate the Merkle root index and proof
-        bytes32 merkleRoot = validateMerkleProof(
+        bytes32 leaf = validateMerkleProof(
             merkleRootIndex,
             secretCode,
             amount,
@@ -156,12 +156,7 @@ contract CodesFactory is Ownable, ReentrancyGuard {
         );
 
         // Redeem the code and transfer tokens
-        redeemCodeAndTransferTokens(
-            secretCode,
-            amount,
-            merkleRoot,
-            commitmentIndex
-        );
+        redeemCodeAndTransferTokens(secretCode, amount, leaf, commitmentIndex);
     }
 
     /**
@@ -192,7 +187,7 @@ contract CodesFactory is Ownable, ReentrancyGuard {
         );
         require(!redeemedLeaves[leaf], "Code has already been redeemed");
 
-        return merkleRoot;
+        return leaf;
     }
 
     /**
@@ -227,13 +222,13 @@ contract CodesFactory is Ownable, ReentrancyGuard {
      * @dev Redeems the secret code, removes the commitment, and transfers the associated tokens to the user.
      * @param secretCode The secret code to redeem.
      * @param amount The amount of tokens associated with the secret code.
-     * @param merkleRoot The Merkle root associated with the valid proof.
+     * @param leaf The Leaf associated with the valid proof.
      * @param commitmentIndex The index of the commitment in the user's commitments array.
      */
     function redeemCodeAndTransferTokens(
         bytes32 secretCode,
         uint256 amount,
-        bytes32 merkleRoot,
+        bytes32 leaf,
         uint256 commitmentIndex
     ) internal {
         uint256 contractBalance = _CSHToken.balanceOf(address(this));
@@ -245,7 +240,7 @@ contract CodesFactory is Ownable, ReentrancyGuard {
         ];
         userCommitments.pop();
 
-        redeemedLeaves[merkleRoot] = true;
+        redeemedLeaves[leaf] = true;
 
         _CSHToken.safeTransfer(msg.sender, amount);
 
