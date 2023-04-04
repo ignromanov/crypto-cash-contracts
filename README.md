@@ -4,7 +4,7 @@ This repository contains the smart contracts for the CryptoCash project, a token
 
 [Web Application Repository](https://github.com/ignromanov/crypto-cash-webapp)
 
-[Run Demo Application](https://demo.crypto-cash.app)
+[Run Demo Application](https://crypto-cash-webapp.vercel.app/)
 
 ## Contracts
 
