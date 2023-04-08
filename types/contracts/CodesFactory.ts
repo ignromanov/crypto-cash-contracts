@@ -35,6 +35,7 @@ export interface CodesFactoryInterface extends utils.Interface {
     "getMerkleRoots()": FunctionFragment;
     "getRedeemedLeaves(bytes32[])": FunctionFragment;
     "getUserCommitments(address)": FunctionFragment;
+    "initialize(address)": FunctionFragment;
     "merkleRoots(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "redeemedLeaves(bytes32)": FunctionFragment;
@@ -51,6 +52,7 @@ export interface CodesFactoryInterface extends utils.Interface {
       | "getMerkleRoots"
       | "getRedeemedLeaves"
       | "getUserCommitments"
+      | "initialize"
       | "merkleRoots"
       | "owner"
       | "redeemedLeaves"
@@ -85,6 +87,10 @@ export interface CodesFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "getUserCommitments",
+    values: [PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "initialize",
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
@@ -136,6 +142,7 @@ export interface CodesFactoryInterface extends utils.Interface {
     functionFragment: "getUserCommitments",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "merkleRoots",
     data: BytesLike
@@ -157,12 +164,14 @@ export interface CodesFactoryInterface extends utils.Interface {
 
   events: {
     "CodeRedeemed(address,bytes32,uint256)": EventFragment;
+    "Initialized(uint8)": EventFragment;
     "MerkleRootAdded(uint256,bytes32)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "UserCommitmentAdded(address,bytes32)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "CodeRedeemed"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "MerkleRootAdded"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "UserCommitmentAdded"): EventFragment;
@@ -179,6 +188,13 @@ export type CodeRedeemedEvent = TypedEvent<
 >;
 
 export type CodeRedeemedEventFilter = TypedEventFilter<CodeRedeemedEvent>;
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface MerkleRootAddedEventObject {
   merkleRootIndex: BigNumber;
@@ -272,6 +288,11 @@ export interface CodesFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string[]]>;
 
+    initialize(
+      CSHTokenAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     merkleRoots(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -332,6 +353,11 @@ export interface CodesFactory extends BaseContract {
     user: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<string[]>;
+
+  initialize(
+    CSHTokenAddress: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   merkleRoots(
     arg0: PromiseOrValue<BigNumberish>,
@@ -394,6 +420,11 @@ export interface CodesFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string[]>;
 
+    initialize(
+      CSHTokenAddress: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     merkleRoots(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -434,6 +465,9 @@ export interface CodesFactory extends BaseContract {
       secretCode?: null,
       amount?: null
     ): CodeRedeemedEventFilter;
+
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
 
     "MerkleRootAdded(uint256,bytes32)"(
       merkleRootIndex?: PromiseOrValue<BigNumberish> | null,
@@ -492,6 +526,11 @@ export interface CodesFactory extends BaseContract {
     getUserCommitments(
       user: PromiseOrValue<string>,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    initialize(
+      CSHTokenAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     merkleRoots(
@@ -554,6 +593,11 @@ export interface CodesFactory extends BaseContract {
     getUserCommitments(
       user: PromiseOrValue<string>,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    initialize(
+      CSHTokenAddress: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     merkleRoots(

@@ -1,21 +1,28 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 /**
  * @title CSHToken
  * @dev An ERC20 token with minting functionality restricted to the CodesFactory contract.
  */
-contract CSHToken is ERC20, Ownable {
+contract CSHToken is ERC20Upgradeable, OwnableUpgradeable {
     address private _authorizedMinter;
     event CodesFactoryChanged(
         address indexed previousCodesFactory,
         address indexed newCodesFactory
     );
 
-    constructor() ERC20("CryptoCash Token", "CSH") {}
+    /**
+     * @notice Initializes the CSHToken contract.
+     */
+    function initialize() public initializer {
+        __ERC20_init("CryptoCash Token", "CSH");
+        __Ownable_init();
+    }
 
     /**
      * @dev Modifier to restrict minting functionality to the CodesFactory contract.
