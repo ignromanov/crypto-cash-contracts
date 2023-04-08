@@ -1,6 +1,6 @@
 # CryptoCash Smart Contracts
 
-This repository contains the smart contracts for the CryptoCash project, a token-based system that allows users to generate and redeem secret codes for acquiring tokens. These contracts are deployed on the Polygon blockchain.
+This repository contains the smart contracts for the CryptoCash project, a token-based system that allows users to generate and redeem secret codes for acquiring tokens. These contracts are deployed on the Polygon Mumbai blockchain.
 
 [Web Application Repository](https://github.com/ignromanov/crypto-cash-webapp)
 
