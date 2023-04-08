@@ -1,3 +1,7 @@
+<p align="center">
+<img src="https://i.imgur.com/kizvtYy.png" alt="CryptoCash Logo" width="200px">
+</p>
+
 # CryptoCash Smart Contracts
 
 This repository contains the smart contracts for the CryptoCash project, a blockchain-based payment solution designed for developing countries. The system enables users to generate and redeem secret codes for acquiring tokens, utilizing the Polygon Mumbai blockchain for fast and affordable transactions.
