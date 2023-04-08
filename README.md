@@ -1,6 +1,6 @@
 # CryptoCash Smart Contracts
 
-This repository contains the smart contracts for the CryptoCash project, a token-based system that allows users to generate and redeem secret codes for acquiring tokens. These contracts are deployed on the Polygon Mumbai blockchain.
+This repository contains the smart contracts for the CryptoCash project, a blockchain-based payment solution designed for developing countries. The system enables users to generate and redeem secret codes for acquiring tokens, utilizing the Polygon Mumbai blockchain for fast and affordable transactions.
 
 [Web Application Repository](https://github.com/ignromanov/crypto-cash-webapp)
 
@@ -9,7 +9,7 @@ This repository contains the smart contracts for the CryptoCash project, a token
 ## Contracts
 
 1. `CSHToken.sol`: The CryptoCash token (CSH) contract, which is an ERC20 token.
-2. `CodesFactory.sol`: The main contract that handles the generation and redemption of secret codes for acquiring tokens.
+2. `CodesFactory.sol`: The main contract that handles the generation and redemption of secret codes for acquiring tokens. It also ensures the security and scalability of the system using Merkle trees.
 
 ## Contract Addresses
 
