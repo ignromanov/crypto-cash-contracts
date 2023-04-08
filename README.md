@@ -11,6 +11,13 @@ This repository contains the smart contracts for the CryptoCash project, a token
 1. `CSHToken.sol`: The CryptoCash token (CSH) contract, which is an ERC20 token.
 2. `CodesFactory.sol`: The main contract that handles the generation and redemption of secret codes for acquiring tokens.
 
+## Contract Addresses
+
+### Polygon Mumbai Testnet
+
+- CSHToken: [0x2dB58C3a57196F3f23206A6d901b47763Bd07EdB](https://mumbai.polygonscan.com/address/0x2dB58C3a57196F3f23206A6d901b47763Bd07EdB/transactions)
+- CodesFactory: [0x5d61cf72bF4051779f36222c383Bf0B6af78D543](https://mumbai.polygonscan.com/address/0x5d61cf72bF4051779f36222c383Bf0B6af78D543/transactions)
+
 ## Development
 
 ### Prerequisites
