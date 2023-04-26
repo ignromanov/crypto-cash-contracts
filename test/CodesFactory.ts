@@ -51,15 +51,18 @@ const createMerkleTree = (
   return StandardMerkleTree.of(leaves, ["bytes32", "uint256"]);
 };
 
-const createCommitment = (secretCode: string, nonce: number): string =>
+const createHash = (secretCode: string, num: number | BigNumber): string =>
   ethers.utils.keccak256(
     ethers.utils.keccak256(
       ethers.utils.defaultAbiCoder.encode(
         ["bytes32", "uint256"],
-        [secretCode, nonce]
+        [secretCode, num]
       )
     )
   );
+
+const createLeaves = (secretCodes: string[], amount: BigNumber) =>
+  secretCodes.map((code) => createHash(code, amount));
 
 describe("CodesFactory", () => {
   let cshToken: Contract,
@@ -108,7 +111,7 @@ describe("CodesFactory", () => {
     // Commit a code
     const secretCode = secretCodes[0];
     const nonce = 1;
-    const commitment = createCommitment(secretCode, nonce);
+    const commitment = createHash(secretCode, nonce);
 
     await codesFactory.connect(addr1).commitCode(commitment);
 
@@ -145,7 +148,7 @@ describe("CodesFactory", () => {
   it("Should fail if a user tries to commit an already used commitment", async () => {
     const secretCodes = createSecretCodes();
     const nonce = 1;
-    const commitment = createCommitment(secretCodes[1], nonce);
+    const commitment = createHash(secretCodes[1], nonce);
 
     await codesFactory.connect(addr1).commitCode(commitment);
     await expect(
@@ -167,7 +170,7 @@ describe("CodesFactory", () => {
       .addMerkleRoot(merkleRoot, numberOfCodes, amount);
 
     const nonce = 1;
-    const commitment = createCommitment(secretCode, nonce);
+    const commitment = createHash(secretCode, nonce);
 
     await codesFactory.connect(addr1).commitCode(commitment);
 
@@ -236,8 +239,8 @@ describe("CodesFactory", () => {
 
     const nonce1 = 1;
     const nonce2 = 2;
-    const commitment1 = createCommitment(secretCode1, nonce1);
-    const commitment2 = createCommitment(secretCode2, nonce2);
+    const commitment1 = createHash(secretCode1, nonce1);
+    const commitment2 = createHash(secretCode2, nonce2);
 
     await codesFactory.connect(addr1).commitCode(commitment1);
     await codesFactory.connect(addr2).commitCode(commitment2);
@@ -321,8 +324,8 @@ describe("CodesFactory", () => {
     const secretCode2 = secretCodes2[numberOfCodes2 - 20];
     const nonce1 = 1;
     const nonce2 = 2;
-    const commitment1 = createCommitment(secretCode1, nonce1);
-    const commitment2 = createCommitment(secretCode2, nonce2);
+    const commitment1 = createHash(secretCode1, nonce1);
+    const commitment2 = createHash(secretCode2, nonce2);
 
     await codesFactory.connect(addr1).commitCode(commitment1);
     await codesFactory.connect(addr2).commitCode(commitment2);
@@ -350,5 +353,82 @@ describe("CodesFactory", () => {
     const userBalance2 = await cshToken.balanceOf(addr2.address);
     expect(userBalance1).to.equal(amount1);
     expect(userBalance2).to.equal(amount2);
+  });
+
+  it("Should return an empty array when no leaves are redeemed", async () => {
+    const numberOfCodes = 20;
+    const amount = ethers.BigNumber.from(333);
+    const secretCodes = createSecretCodes(numberOfCodes);
+    const merkleTree = createMerkleTree(secretCodes, amount);
+
+    const merkleRoot = merkleTree.root;
+    await codesFactory
+      .connect(owner)
+      .addMerkleRoot(merkleRoot, numberOfCodes, amount);
+
+    const leaves = createLeaves(secretCodes, amount);
+    const redeemedLeaves = await codesFactory.getRedeemedLeaves(leaves);
+    expect(redeemedLeaves.length).to.equal(0);
+  });
+
+  it("Should return redeemed leaves when some leaves are redeemed", async () => {
+    const numberOfCodes = 20;
+    const amount = ethers.BigNumber.from(333);
+    const secretCodes = createSecretCodes(numberOfCodes);
+    const merkleTree = createMerkleTree(secretCodes, amount);
+
+    const merkleRoot = merkleTree.root;
+    await codesFactory
+      .connect(owner)
+      .addMerkleRoot(merkleRoot, numberOfCodes, amount);
+
+    const secretCode = secretCodes[numberOfCodes - 1];
+    const nonce = 1;
+    const commitment = createHash(secretCode, nonce);
+
+    await codesFactory.connect(addr1).commitCode(commitment);
+
+    const proof = merkleTree.getProof([secretCode, amount]);
+    await codesFactory
+      .connect(addr1)
+      .revealCode(0, secretCode, amount, nonce, proof);
+
+    const leaves = createLeaves(secretCodes, amount);
+    const redeemedLeaves = await codesFactory.getRedeemedLeaves(leaves);
+    expect(redeemedLeaves.length).to.equal(1);
+    expect(redeemedLeaves[0]).to.equal(leaves[numberOfCodes - 1]);
+  });
+
+  it("Should return redeemed leaves when all leaves are redeemed", async () => {
+    const numberOfCodes = 10;
+    const amount = ethers.BigNumber.from(333);
+    const secretCodes = createSecretCodes(numberOfCodes);
+    const merkleTree = createMerkleTree(secretCodes, amount);
+
+    const merkleRoot = merkleTree.root;
+    await codesFactory
+      .connect(owner)
+      .addMerkleRoot(merkleRoot, numberOfCodes, amount);
+
+    for (let i = 0; i < numberOfCodes; i++) {
+      const secretCode = secretCodes[i];
+      const nonce = i + 1;
+      const commitment = createHash(secretCode, nonce);
+
+      await codesFactory.connect(addr1).commitCode(commitment);
+
+      const proof = merkleTree.getProof([secretCode, amount]);
+      await codesFactory
+        .connect(addr1)
+        .revealCode(0, secretCode, amount, nonce, proof);
+    }
+
+    const leaves = createLeaves(secretCodes, amount);
+    const redeemedLeaves = await codesFactory.getRedeemedLeaves(leaves);
+    expect(redeemedLeaves.length).to.equal(numberOfCodes);
+
+    for (let i = 0; i < numberOfCodes; i++) {
+      expect(redeemedLeaves[i]).to.equal(leaves[i]);
+    }
   });
 });
