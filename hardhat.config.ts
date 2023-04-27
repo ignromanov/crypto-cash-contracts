@@ -5,6 +5,7 @@ import "@openzeppelin/hardhat-upgrades";
 import "@nomicfoundation/hardhat-chai-matchers";
 import "@nomicfoundation/hardhat-network-helpers";
 import "dotenv/config";
+import "solidity-coverage";
 
 const MUMBAI_API_KEY = process.env.MUMBAI_API_KEY || "";
 const GOERLI_API_KEY = process.env.GOERLI_API_KEY || "";
