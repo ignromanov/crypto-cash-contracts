@@ -34,8 +34,8 @@ This repository contains the smart contracts for the CryptoCash project, a block
 
 ### Polygon Mumbai Testnet
 
-- CSHToken: [0x2dB58C3a57196F3f23206A6d901b47763Bd07EdB](https://mumbai.polygonscan.com/address/0x2dB58C3a57196F3f23206A6d901b47763Bd07EdB/transactions)
-- CodesFactory: [0x5d61cf72bF4051779f36222c383Bf0B6af78D543](https://mumbai.polygonscan.com/address/0x5d61cf72bF4051779f36222c383Bf0B6af78D543/transactions)
+- CSHToken: [0xA729D60d8E59aA53d59A752F15cc47e5462BA1a5](https://mumbai.polygonscan.com/address/0xA729D60d8E59aA53d59A752F15cc47e5462BA1a5/transactions)
+- CodesFactory: [0x931Ea08151960d4d6110386ff22Dd78B583a7105](https://mumbai.polygonscan.com/address/0x931Ea08151960d4d6110386ff22Dd78B583a7105/transactions)
 
 ## Development
 
