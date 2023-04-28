@@ -22,9 +22,9 @@ contract CodesFactory is
     CSHToken private _CSHToken;
     bytes32[] public merkleRoots;
 
-    mapping(bytes32 => uint256) public merkleRootTokenAmounts;
     mapping(bytes32 => bool) public redeemedLeaves;
     mapping(address => bytes32[]) public commitments;
+    mapping(bytes32 => uint256) public merkleRootTokenAmounts;
 
     event MerkleRootAdded(uint256 indexed merkleRootIndex, bytes32 merkleRoot);
     event UserCommitmentAdded(address indexed user, bytes32 commitment);
