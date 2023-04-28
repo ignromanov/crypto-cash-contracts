@@ -78,4 +78,26 @@ describe("CSHToken", () => {
       .to.emit(cshToken, "CodesFactoryChanged")
       .withArgs(ethers.constants.AddressZero, codesFactory.address);
   });
+
+  it("Should allow the CodesFactory to burn tokens", async () => {
+    await cshToken.connect(owner).setAuthorizedMinter(codesFactory.address);
+    await cshToken.connect(codesFactory).mint(addr1.address, 1000);
+
+    const addr1BalanceBeforeBurn = await cshToken.balanceOf(addr1.address);
+    expect(addr1BalanceBeforeBurn).to.equal(1000);
+
+    await cshToken.connect(codesFactory).burn(addr1.address, 500);
+
+    const addr1BalanceAfterBurn = await cshToken.balanceOf(addr1.address);
+    expect(addr1BalanceAfterBurn).to.equal(500);
+  });
+
+  it("Should not allow an unauthorized address to burn tokens", async () => {
+    await cshToken.connect(owner).setAuthorizedMinter(codesFactory.address);
+    await cshToken.connect(codesFactory).mint(addr1.address, 1000);
+
+    await expect(
+      cshToken.connect(addr2).burn(addr1.address, 500)
+    ).to.be.revertedWith("Only AuthorizedMinter can mint tokens");
+  });
 });

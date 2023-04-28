@@ -445,16 +445,16 @@ describe("CodesFactory", () => {
     let allMerkleRoots = await codesFactory.getMerkleRoots();
     expect(allMerkleRoots.length).to.equal(3);
 
-    await codesFactory.removeMerkleRoot(1);
+    await codesFactory.removeMerkleRootTestnetOnly(1);
 
     allMerkleRoots = await codesFactory.getMerkleRoots();
     expect(allMerkleRoots.length).to.equal(2);
   });
 
   it("Should revert if trying to remove a non-existing Merkle root", async () => {
-    await expect(codesFactory.removeMerkleRoot(0)).to.be.revertedWith(
-      "Invalid Merkle root index"
-    );
+    await expect(
+      codesFactory.removeMerkleRootTestnetOnly(0)
+    ).to.be.revertedWith("Invalid Merkle root index");
   });
 
   it("Should not allow non-owners to remove Merkle roots", async () => {
@@ -468,7 +468,38 @@ describe("CodesFactory", () => {
     await codesFactory.addMerkleRoot(merkleRoot, numberOfCodes, amount);
 
     await expect(
-      codesFactory.connect(addr1).removeMerkleRoot(0)
+      codesFactory.connect(addr1).removeMerkleRootTestnetOnly(0)
     ).to.be.revertedWith("Ownable: caller is not the owner");
+  });
+
+  it("Should burn the correct amount of tokens", async () => {
+    const secretCodes = createSecretCodes();
+    const amount = ethers.BigNumber.from(333);
+    const merkleTree = createMerkleTree(secretCodes, amount);
+
+    const merkleRoot = merkleTree.root;
+    const numberOfCodes = secretCodes.length;
+    const totalTokensToMint = amount.mul(numberOfCodes);
+
+    await codesFactory
+      .connect(owner)
+      .addMerkleRoot(merkleRoot, numberOfCodes, amount);
+
+    const contractBalanceBeforeBurn = await cshToken.balanceOf(
+      codesFactory.address
+    );
+    expect(contractBalanceBeforeBurn).to.equal(totalTokensToMint);
+
+    const tokensToBurn = amount;
+    await codesFactory
+      .connect(owner)
+      .burnTokensTestnetOnly(codesFactory.address, tokensToBurn);
+
+    const contractBalanceAfterBurn = await cshToken.balanceOf(
+      codesFactory.address
+    );
+    expect(contractBalanceAfterBurn).to.equal(
+      contractBalanceBeforeBurn.sub(tokensToBurn)
+    );
   });
 });

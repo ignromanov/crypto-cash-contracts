@@ -22,6 +22,7 @@ contract CodesFactory is
     CSHToken private _CSHToken;
     bytes32[] public merkleRoots;
 
+    mapping(bytes32 => uint256) public merkleRootTokenAmounts;
     mapping(bytes32 => bool) public redeemedLeaves;
     mapping(address => bytes32[]) public commitments;
 
@@ -116,20 +117,52 @@ contract CodesFactory is
         uint256 totalTokensToMint = numberOfCodes * amount;
         _CSHToken.mint(address(this), totalTokensToMint);
 
+        merkleRootTokenAmounts[merkleRoot] = totalTokensToMint;
+
         emit MerkleRootAdded(merkleRootIndex, merkleRoot);
     }
 
     /**
      * @notice Remove a Merkle root from the contract by index
+     * @dev This function is for testnet use only and will be removed in the production release
      * @param merkleRootIndex The index of the Merkle root to be removed
      */
-    function removeMerkleRoot(uint256 merkleRootIndex) external onlyOwner {
+    function removeMerkleRootTestnetOnly(
+        uint256 merkleRootIndex
+    ) external onlyOwner {
         require(
             merkleRootIndex < merkleRoots.length,
             "Invalid Merkle root index"
         );
+
+        bytes32 merkleRoot = merkleRoots[merkleRootIndex];
+        uint256 tokensToBurn = merkleRootTokenAmounts[merkleRoot];
+
+        // Burn tokens associated with the Merkle root
+        _CSHToken.burn(address(this), tokensToBurn);
+
+        // Remove Merkle root from the array
         merkleRoots[merkleRootIndex] = merkleRoots[merkleRoots.length - 1];
         merkleRoots.pop();
+
+        // Remove token amount from the mapping
+        delete merkleRootTokenAmounts[merkleRoot];
+    }
+
+    /**
+     * @notice Burn a specified amount of tokens from the given address.
+     * @dev This function is for testnet use only and will be removed in the production release
+     * @param from The address to burn tokens from.
+     * @param amount The amount of tokens to burn.
+     */
+    function burnTokensTestnetOnly(
+        address from,
+        uint256 amount
+    ) external onlyOwner {
+        uint256 contractBalance = _CSHToken.balanceOf(from);
+        require(contractBalance >= amount, "Not enough tokens to burn");
+
+        _CSHToken.burn(from, amount);
     }
 
     /**

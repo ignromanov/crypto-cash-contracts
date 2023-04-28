@@ -62,4 +62,13 @@ contract CSHToken is ERC20Upgradeable, OwnableUpgradeable {
     function mint(address to, uint256 amount) external onlyCodesFactory {
         _mint(to, amount);
     }
+
+    /**
+     * @dev Burns a specified amount of tokens from the given address.
+     * @param from The address to burn tokens from.
+     * @param amount The amount of tokens to burn.
+     */
+    function burn(address from, uint256 amount) external onlyCodesFactory {
+        _burn(from, amount);
+    }
 }
