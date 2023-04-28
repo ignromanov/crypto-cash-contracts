@@ -431,4 +431,44 @@ describe("CodesFactory", () => {
       expect(redeemedLeaves[i]).to.equal(leaves[i]);
     }
   });
+
+  it("Should remove a Merkle root by index", async () => {
+    const amount = ethers.BigNumber.from(1);
+    const secretCodes = createSecretCodes(1);
+    const merkleTree = createMerkleTree(secretCodes, amount);
+
+    // create array from 3 elements
+    const merkleRoots = Array(3).fill(merkleTree.root);
+    for (let i = 0; i < merkleRoots.length; i++) {
+      await codesFactory.addMerkleRoot(merkleRoots[i], 1, 1);
+    }
+    let allMerkleRoots = await codesFactory.getMerkleRoots();
+    expect(allMerkleRoots.length).to.equal(3);
+
+    await codesFactory.removeMerkleRoot(1);
+
+    allMerkleRoots = await codesFactory.getMerkleRoots();
+    expect(allMerkleRoots.length).to.equal(2);
+  });
+
+  it("Should revert if trying to remove a non-existing Merkle root", async () => {
+    await expect(codesFactory.removeMerkleRoot(0)).to.be.revertedWith(
+      "Invalid Merkle root index"
+    );
+  });
+
+  it("Should not allow non-owners to remove Merkle roots", async () => {
+    const secretCodes = createSecretCodes();
+    const amount = ethers.BigNumber.from(333);
+    const merkleTree = createMerkleTree(secretCodes, amount);
+
+    const merkleRoot = merkleTree.root;
+    const numberOfCodes = secretCodes.length;
+
+    await codesFactory.addMerkleRoot(merkleRoot, numberOfCodes, amount);
+
+    await expect(
+      codesFactory.connect(addr1).removeMerkleRoot(0)
+    ).to.be.revertedWith("Ownable: caller is not the owner");
+  });
 });
