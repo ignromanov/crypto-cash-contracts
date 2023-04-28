@@ -31,7 +31,7 @@ const config: HardhatUserConfig = {
     outDir: "types",
     target: "ethers-v5",
   },
-  defaultNetwork: "localhost",
+  defaultNetwork: "hardhat",
   networks: {
     goerli: {
       url: `https://goerli.infura.io/v3/${GOERLI_API_KEY}`,
@@ -40,9 +40,8 @@ const config: HardhatUserConfig = {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${MUMBAI_API_KEY}`,
       accounts: [`0x${ACCOUNT_PRIVATE_KEY}`],
     },
-    localhost: {
-      url: "http://localhost:8545",
-      chainId: 31337,
+    hardhat: {
+      chainId: 1337,
     },
   },
   etherscan: {
