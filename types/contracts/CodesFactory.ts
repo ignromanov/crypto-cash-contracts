@@ -39,6 +39,7 @@ export interface CodesFactoryInterface extends utils.Interface {
     "merkleRoots(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "redeemedLeaves(bytes32)": FunctionFragment;
+    "removeMerkleRoot(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "revealCode(uint256,bytes32,uint256,uint256,bytes32[])": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -56,6 +57,7 @@ export interface CodesFactoryInterface extends utils.Interface {
       | "merkleRoots"
       | "owner"
       | "redeemedLeaves"
+      | "removeMerkleRoot"
       | "renounceOwnership"
       | "revealCode"
       | "transferOwnership"
@@ -101,6 +103,10 @@ export interface CodesFactoryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "redeemedLeaves",
     values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeMerkleRoot",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -150,6 +156,10 @@ export interface CodesFactoryInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "redeemedLeaves",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeMerkleRoot",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -305,6 +315,11 @@ export interface CodesFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    removeMerkleRoot(
+      merkleRootIndex: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -371,6 +386,11 @@ export interface CodesFactory extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  removeMerkleRoot(
+    merkleRootIndex: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   renounceOwnership(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -436,6 +456,11 @@ export interface CodesFactory extends BaseContract {
       arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    removeMerkleRoot(
+      merkleRootIndex: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
 
@@ -545,6 +570,11 @@ export interface CodesFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    removeMerkleRoot(
+      merkleRootIndex: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -610,6 +640,11 @@ export interface CodesFactory extends BaseContract {
     redeemedLeaves(
       arg0: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    removeMerkleRoot(
+      merkleRootIndex: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     renounceOwnership(

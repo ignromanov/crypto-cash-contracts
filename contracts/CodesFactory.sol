@@ -120,6 +120,19 @@ contract CodesFactory is
     }
 
     /**
+     * @notice Remove a Merkle root from the contract by index
+     * @param merkleRootIndex The index of the Merkle root to be removed
+     */
+    function removeMerkleRoot(uint256 merkleRootIndex) external onlyOwner {
+        require(
+            merkleRootIndex < merkleRoots.length,
+            "Invalid Merkle root index"
+        );
+        merkleRoots[merkleRootIndex] = merkleRoots[merkleRoots.length - 1];
+        merkleRoots.pop();
+    }
+
+    /**
      * @notice Commit a code to the contract
      * @param commitment The code commitment
      */
