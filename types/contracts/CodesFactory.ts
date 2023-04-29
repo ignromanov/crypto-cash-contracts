@@ -30,16 +30,18 @@ import type {
 export interface CodesFactoryInterface extends utils.Interface {
   functions: {
     "addMerkleRoot(bytes32,uint256,uint256)": FunctionFragment;
+    "burnTokensTestnetOnly(address,uint256)": FunctionFragment;
     "commitCode(bytes32)": FunctionFragment;
     "commitments(address,uint256)": FunctionFragment;
     "getMerkleRoots()": FunctionFragment;
     "getRedeemedLeaves(bytes32[])": FunctionFragment;
     "getUserCommitments(address)": FunctionFragment;
     "initialize(address)": FunctionFragment;
+    "merkleRootTokenAmounts(bytes32)": FunctionFragment;
     "merkleRoots(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "redeemedLeaves(bytes32)": FunctionFragment;
-    "removeMerkleRoot(uint256)": FunctionFragment;
+    "removeMerkleRootTestnetOnly(uint256)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "revealCode(uint256,bytes32,uint256,uint256,bytes32[])": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
@@ -48,16 +50,18 @@ export interface CodesFactoryInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "addMerkleRoot"
+      | "burnTokensTestnetOnly"
       | "commitCode"
       | "commitments"
       | "getMerkleRoots"
       | "getRedeemedLeaves"
       | "getUserCommitments"
       | "initialize"
+      | "merkleRootTokenAmounts"
       | "merkleRoots"
       | "owner"
       | "redeemedLeaves"
-      | "removeMerkleRoot"
+      | "removeMerkleRootTestnetOnly"
       | "renounceOwnership"
       | "revealCode"
       | "transferOwnership"
@@ -70,6 +74,10 @@ export interface CodesFactoryInterface extends utils.Interface {
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
     ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "burnTokensTestnetOnly",
+    values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "commitCode",
@@ -96,6 +104,10 @@ export interface CodesFactoryInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "merkleRootTokenAmounts",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
     functionFragment: "merkleRoots",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
@@ -105,7 +117,7 @@ export interface CodesFactoryInterface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
-    functionFragment: "removeMerkleRoot",
+    functionFragment: "removeMerkleRootTestnetOnly",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
@@ -131,6 +143,10 @@ export interface CodesFactoryInterface extends utils.Interface {
     functionFragment: "addMerkleRoot",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "burnTokensTestnetOnly",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "commitCode", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "commitments",
@@ -150,6 +166,10 @@ export interface CodesFactoryInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "merkleRootTokenAmounts",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "merkleRoots",
     data: BytesLike
   ): Result;
@@ -159,7 +179,7 @@ export interface CodesFactoryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "removeMerkleRoot",
+    functionFragment: "removeMerkleRootTestnetOnly",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -275,6 +295,12 @@ export interface CodesFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    burnTokensTestnetOnly(
+      from: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     commitCode(
       commitment: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -303,6 +329,11 @@ export interface CodesFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    merkleRootTokenAmounts(
+      arg0: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber]>;
+
     merkleRoots(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -315,7 +346,7 @@ export interface CodesFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
-    removeMerkleRoot(
+    removeMerkleRootTestnetOnly(
       merkleRootIndex: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -342,6 +373,12 @@ export interface CodesFactory extends BaseContract {
   addMerkleRoot(
     merkleRoot: PromiseOrValue<BytesLike>,
     numberOfCodes: PromiseOrValue<BigNumberish>,
+    amount: PromiseOrValue<BigNumberish>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  burnTokensTestnetOnly(
+    from: PromiseOrValue<string>,
     amount: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -374,6 +411,11 @@ export interface CodesFactory extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  merkleRootTokenAmounts(
+    arg0: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   merkleRoots(
     arg0: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -386,7 +428,7 @@ export interface CodesFactory extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  removeMerkleRoot(
+  removeMerkleRootTestnetOnly(
     merkleRootIndex: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -413,6 +455,12 @@ export interface CodesFactory extends BaseContract {
     addMerkleRoot(
       merkleRoot: PromiseOrValue<BytesLike>,
       numberOfCodes: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    burnTokensTestnetOnly(
+      from: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -445,6 +493,11 @@ export interface CodesFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
+    merkleRootTokenAmounts(
+      arg0: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     merkleRoots(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -457,7 +510,7 @@ export interface CodesFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    removeMerkleRoot(
+    removeMerkleRootTestnetOnly(
       merkleRootIndex: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
@@ -530,6 +583,12 @@ export interface CodesFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    burnTokensTestnetOnly(
+      from: PromiseOrValue<string>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     commitCode(
       commitment: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -558,6 +617,11 @@ export interface CodesFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    merkleRootTokenAmounts(
+      arg0: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     merkleRoots(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -570,7 +634,7 @@ export interface CodesFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    removeMerkleRoot(
+    removeMerkleRootTestnetOnly(
       merkleRootIndex: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -598,6 +662,12 @@ export interface CodesFactory extends BaseContract {
     addMerkleRoot(
       merkleRoot: PromiseOrValue<BytesLike>,
       numberOfCodes: PromiseOrValue<BigNumberish>,
+      amount: PromiseOrValue<BigNumberish>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    burnTokensTestnetOnly(
+      from: PromiseOrValue<string>,
       amount: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
@@ -630,6 +700,11 @@ export interface CodesFactory extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
+    merkleRootTokenAmounts(
+      arg0: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     merkleRoots(
       arg0: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -642,7 +717,7 @@ export interface CodesFactory extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    removeMerkleRoot(
+    removeMerkleRootTestnetOnly(
       merkleRootIndex: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
